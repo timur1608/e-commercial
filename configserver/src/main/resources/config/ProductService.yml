@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productDB
+    username: '{cipher}11662148441c9f7089a4b1c7f6426fd6c7d042680b4ec01938a005604ac1cc52'
+    password: '{cipher}039676f49cce2671ac48c3da552bbfc661bece453a5b68e5d7f69df0a6e616fc'
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port:
+    8081
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+  instance:
+    prefer-ip-address: true

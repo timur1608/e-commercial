@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Интернет-магазин</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        #shoppingCart .card {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Интернет-магазин</h1>
+
+    <!-- Фильтр по категориям -->
+    <div class="form-group">
+        <label for="categorySelect">Выберите категорию:</label>
+        <select id="categorySelect" class="form-control" onchange="filterProducts()">
+            <option value="">Все категории</option>
+            <option th:selected="${session.categoryId==category.id}" th:each="category : ${categories}"
+                    th:value="${category.id}" th:text="${category.name}"></option>
+        </select>
+    </div>
+
+    <div class="row">
+        <!-- Каталог продуктов -->
+        <div class="col-md-8">
+            <h2>Каталог продуктов</h2>
+            <div class="row row-cols-1 row-cols-md-2" id="productCatalog">
+                <div class="col mb-4" th:each="product : ${products}">
+                    <div class="card h-100">
+                        <img th:src="${product.imageUrl}" class="card-img-top" alt="Изображение продукта">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title" th:text="${product.title}">Название продукта</h5>
+                            <p class="card-text" th:text="${product.description}">Описание продукта</p>
+                            <p class="card-text">
+                                <strong th:text="${product.price}">Цена</strong> руб.
+                            </p>
+                            <button class="btn btn-primary mt-auto" th:attr="data-id=${product.id}"
+                                    onclick="addToCart(this)">Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2>Корзина</h2>
+            <div id="shoppingCart">
+                <div class="card" th:each="item : ${cartItems}">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img th:src="@{'/images/' + ${item.image}}" class="card-img" alt="Изображение продукта">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${item.name}">Название продукта</h5>
+                                <p class="card-text">
+                                    <strong th:text="${item.price}">Цена</strong> руб.
+                                </p>
+                                <button class="btn btn-danger btn-sm" th:attr="data-id=${item.id}"
+                                        onclick="removeFromCart(this)">Удалить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h4>Итог: <span id="totalPrice">0</span> руб.</h4>
+                <button class="btn btn-success">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addToCart(btn) {
+        const productId = btn.getAttribute('data-id');
+        console.log("Добавляем продукт в корзину: " + productId);
+    }
+
+    function filterProducts() {
+        const selectedCategory = document.getElementById('categorySelect').value;
+        window.location = "/home/products?categoryId=" + selectedCategory;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productDB
+    username: '{cipher}11662148441c9f7089a4b1c7f6426fd6c7d042680b4ec01938a005604ac1cc52'
+    password: '{cipher}039676f49cce2671ac48c3da552bbfc661bece453a5b68e5d7f69df0a6e616fc'
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port:
+    8081
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+  instance:
+    prefer-ip-address: true
+s3:
+  config:
+    bucket: reportstorage
+    region: ru-central1
+    key_id: '{cipher}b965908fea0f3404746cf8578d28a5036eff4ab7aa8b78eefdc39159070b116408cb85e082b4c483847b0d635e1ce6a5'
+    secret_key: "{cipher}462be74a3ea8bbd47e8ab8824171d585b281d71470896fb3eda386c293562dc988d7ae9a42c4d3760b36557a403f2c735651a4dc79d60323aada68bbb0df9215"
+    s3_endpoint: https://storage.yandexcloud.net
