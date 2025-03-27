@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import shopping.productservice.model.Product;
 import shopping.productservice.service.ProductService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping(value = "api/v1/products")
@@ -43,6 +46,11 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@RequestBody Product product){
         productService.save(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    }
+
+    @PostMapping("/ids")
+    public ResponseEntity<Iterable<Product>> getAllProductsByIds(@RequestBody Iterable<Long> ids){
+        return ResponseEntity.ok(productService.findProductsByIds(ids));
     }
 
     @PutMapping

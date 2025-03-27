@@ -1,0 +1,19 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: microservice-auth
+            client-secret: Q2PFHxFb7INmCYVGd6c1yOiEg67zn1rw
+            scope: openid
+            authorization-grant-type: authorization_code
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8090/realms/spring-boot-microservice-realm
+            token-uri: http://localhost:8090/realms/spring-boot-microservice-realm/protocol/openid-connect/token
+
+logging:
+  level:
+    keycloak: DEBUG

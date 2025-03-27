@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: notificationserver
+  config:
+    import: optional:configserver:http://localhost:8071
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.socket: DEBUG
+    org.springframework.messaging: DEBUG

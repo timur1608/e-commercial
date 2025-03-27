@@ -7,6 +7,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/spring-boot-microservice-realm
 server:
   port:
     8081
@@ -18,6 +23,8 @@ eureka:
       defaultZone: http://localhost:8070/eureka/
   instance:
     prefer-ip-address: true
+
+
 s3:
   config:
     bucket: reportstorage

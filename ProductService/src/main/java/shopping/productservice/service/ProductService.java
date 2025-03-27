@@ -46,4 +46,9 @@ public class ProductService {
         products.forEach(product -> {product.setImageUrl(imageUrlReceiver.getImageUrl(product.getImageUrl()));});
         return products;
     }
+    public Iterable<Product> findProductsByIds(Iterable<Long> ids) {
+        Iterable<Product> products = productRepository.findAllById(ids);
+        products.forEach(product -> {product.setImageUrl(imageUrlReceiver.getImageUrl(product.getImageUrl()));});
+        return products;
+    }
 }

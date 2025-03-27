@@ -14,6 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class Cart {
     @Id
-    private Long userId;
+    private String userId;
     private Map<Long, Integer> products;
 }
