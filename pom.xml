@@ -28,6 +28,7 @@
         <module>orderserver</module>
         <module>notificationserver</module>
         <module>deliveryserver</module>
+        <module>paymentserver</module>
     </modules>
 
 </project>

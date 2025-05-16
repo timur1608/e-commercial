@@ -23,6 +23,9 @@ public class CartService {
         if (cart == null) {
             cart = new Cart(userId, new HashMap<>());
         }
+        if (cart.getProducts() == null) {
+            cart.setProducts(new HashMap<>());
+        }
         if (cart.getProducts().containsKey(productId)) {
             cart.getProducts().put(productId, cart.getProducts().get(productId) + 1);
         }
@@ -39,6 +42,22 @@ public class CartService {
         }
         else{
             return null;
+        }
+    }
+    public Cart getCart(){
+        Cart cart = cartRepository.findByUserId(securityExtracter.extractUserId());
+        if (cart != null) {
+            return cart;
+        }
+        return null;
+    }
+
+    public void clearCart(){
+        String userId = securityExtracter.extractUserId();
+        Cart cart = cartRepository.findByUserId(userId);
+        if (cart != null) {
+            cart.getProducts().clear();
+            cartRepository.save(cart);
         }
     }
 }

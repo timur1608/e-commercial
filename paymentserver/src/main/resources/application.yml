@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: paymentserver
+  profiles:
+    active: dev
+  config:
+    import: optional:configserver:http://localhost:8071
+
+STRIPE:
+  SECRET:
+    KEY: '{cipher}c0ff12ee47eb639b7d6f38f186479e12402b61d6cfd883f386456b5506050b2823f63bc6f03fdbad3ce35b238c92f49c859443f7d8ee09b6dc08bd64258c8a9198cb47ec5fd535329fcb69e4016833e170171666d1af5684b8397e157b849db78bd3363669403bc1b4c241e924920e38025a857f25401115211605bb13b98430'

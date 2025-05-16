@@ -16,13 +16,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/ws/**").permitAll();
+                    authorize.requestMatchers("/ws/**").permitAll()
+                            .requestMatchers("/actuator/**").permitAll()
+                            .anyRequest().authenticated();
                 })
+                .csrf(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .headers(headers -> {
                     headers.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
-                })
-                .csrf(AbstractHttpConfigurer::disable);
+                });
         return http.build();
     }
 

@@ -14,4 +14,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8090/realms/spring-boot-microservice-realm
+          issuer-uri: http://localhost:8090/realms/ecommerce
+
+mailjet:
+  api:
+    pk: '{cipher}e9985431976e07fac88acc0803d8e69fc4885a0a63c34cf7640f49626e34f4e8ffc31c68c599c1f69557d1c24ca726b71c1069a0035ac04835a32e6791bb5f95'
+    sk: '{cipher}5406d001d8105a71780ac73a5d7c97ffe4eaa02aba8216933171108c61504c090259181c710ad7f74a983f8a44db7058596bbb9e15754729b4fd2d69440378a5'

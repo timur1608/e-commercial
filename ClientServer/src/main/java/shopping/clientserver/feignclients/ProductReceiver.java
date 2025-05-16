@@ -16,5 +16,5 @@ public interface ProductReceiver {
     Iterable<Product> getProductsByCategory(@RequestParam("categoryId") Long categoryId);
 
     @PostMapping(value = "/ids", consumes = "application/json")
-    Iterable<Product> getProductsByIds(@RequestBody Iterable<Long> ids);
+    Iterable<Product> getProductsByIds(@RequestBody List<Long> ids);
 }

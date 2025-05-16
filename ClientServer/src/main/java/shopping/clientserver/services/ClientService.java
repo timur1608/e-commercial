@@ -7,6 +7,8 @@ import shopping.clientserver.DTO.Product;
 import shopping.clientserver.feignclients.CategoryReceiver;
 import shopping.clientserver.feignclients.ProductReceiver;
 
+import java.util.List;
+
 
 @Service
 public class ClientService {
@@ -23,7 +25,7 @@ public class ClientService {
     public Iterable<Product> getProductsByCategory(Long categoryId) {
         return productReceiver.getProductsByCategory(categoryId);
     }
-    public Iterable<Product> getProductsByIds(Iterable<Long> productIds) {
+    public Iterable<Product> getProductsByIds(List<Long> productIds) {
         return productReceiver.getProductsByIds(productIds);
     }
 

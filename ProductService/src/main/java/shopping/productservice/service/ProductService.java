@@ -1,13 +1,21 @@
 package shopping.productservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import shopping.productservice.model.Category;
 import shopping.productservice.model.Product;
 import shopping.productservice.repository.ImageUrlReceiver;
 import shopping.productservice.repository.ProductRepository;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+
+@Slf4j
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -34,21 +42,31 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    @Cacheable(value="productsByCategory", key="#categoryId")
     public Iterable<Product> findProductsByCategoryId(Long categoryId) {
         Category category = categoryService.findById(categoryId);
-        Iterable<Product> products = productRepository.findProductsByCategory(category);
-        products.forEach(product -> {product.setImageUrl(imageUrlReceiver.getImageUrl(product.getImageUrl()));});
-        return products;
+        return getImagesForProducts(productRepository.findProductsByCategory(category));
     }
-
+    @Cacheable("products")
     public Iterable<Product> findAll() {
         Iterable<Product> products = productRepository.findAll();
-        products.forEach(product -> {product.setImageUrl(imageUrlReceiver.getImageUrl(product.getImageUrl()));});
-        return products;
+        return getImagesForProducts(StreamSupport.stream(products.spliterator(), false).collect(Collectors.toList()));
     }
-    public Iterable<Product> findProductsByIds(Iterable<Long> ids) {
+    @Cacheable(value="productsByIds", key="#ids")
+    public Iterable<Product> findProductsByIds(List<Long> ids) {
         Iterable<Product> products = productRepository.findAllById(ids);
-        products.forEach(product -> {product.setImageUrl(imageUrlReceiver.getImageUrl(product.getImageUrl()));});
+        return getImagesForProducts(StreamSupport.stream(products.spliterator(), false).collect(Collectors.toList()));
+    }
+    public List<Product> getImagesForProducts(List<Product> products) {
+        List<String> imageUrls = imageUrlReceiver.getImagesUrl(products.stream()
+                .map(Product::getImageUrl)
+                .collect(Collectors.toList())
+        );
+        AtomicReference<Integer> index = new AtomicReference<>(0);
+        products.forEach(product -> {
+            product.setImageUrl(imageUrls.get(index.get()));
+            index.getAndSet(index.get() + 1);
+        });
         return products;
     }
 }

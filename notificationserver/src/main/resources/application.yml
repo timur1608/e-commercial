@@ -3,9 +3,24 @@ spring:
     name: notificationserver
   config:
     import: optional:configserver:http://localhost:8071
+  zipkin:
+    base-url: http://localhost:9411
+  cloud:
+    function:
+      definition: receiveSomeMessage
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          enable-observation: true
+      bindings:
+        receiveSomeMessage-in-0:
+          destination: orderStatus
+  sleuth:
+    integration:
+      enabled: true
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web.socket: DEBUG
-    org.springframework.messaging: DEBUG
+management:
+  tracing:
+    sampling:
+      probability: 1

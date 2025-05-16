@@ -29,8 +29,8 @@ public class CartService {
         }
         Map<Long, Integer> map = cartSender.getProducts();
         Map<Product, Integer> products = new HashMap<>();
-        Iterable<Product> productList = clientService.getProductsByIds(map.keySet());
-        Integer totalPrice = 0;
+        Iterable<Product> productList = clientService.getProductsByIds(map.keySet().stream().toList());
+        int totalPrice = 0;
         for (Product product : productList) {
             products.put(product, map.get(product.getId()));
             totalPrice += product.getPrice() * map.get(product.getId());

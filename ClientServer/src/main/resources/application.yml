@@ -5,15 +5,27 @@ spring:
         registration:
           keycloak:
             provider: keycloak
-            client-id: microservice-auth
-            client-secret: Q2PFHxFb7INmCYVGd6c1yOiEg67zn1rw
+            client-id: client
+            client-secret: Rr2tmaPfESGByOj2mwnbtgcfW2nINBRN
             scope: openid
             authorization-grant-type: authorization_code
         provider:
           keycloak:
-            issuer-uri: http://localhost:8090/realms/spring-boot-microservice-realm
-            token-uri: http://localhost:8090/realms/spring-boot-microservice-realm/protocol/openid-connect/token
-
-logging:
-  level:
-    keycloak: DEBUG
+            issuer-uri: http://localhost:8090/realms/ecommerce
+            token-uri: http://localhost:8090/realms/ecommerce/protocol/openid-connect/token
+  sleuth:
+    feign:
+      enabled: true
+    integration:
+      enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  tracing:
+    sampling:
+      probability: 1
+STRIPE:
+  PUBLIC:
+    KEY: pk_test_51RLVOFRp0C4QM5chV9j06OcpcAwLwInnTe8hfJhtdks82oYyZJXpJgNXDxEwOEdLvPkLcN71PS0KjbcT6GxBvyTN00p8iKNdSl

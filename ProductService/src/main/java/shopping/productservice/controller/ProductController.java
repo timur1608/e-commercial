@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import shopping.productservice.model.Product;
 import shopping.productservice.service.ProductService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,7 +48,7 @@ public class ProductController {
     }
 
     @PostMapping("/ids")
-    public ResponseEntity<Iterable<Product>> getAllProductsByIds(@RequestBody Iterable<Long> ids){
+    public ResponseEntity<Iterable<Product>> getAllProductsByIds(@RequestBody List<Long> ids){
         return ResponseEntity.ok(productService.findProductsByIds(ids));
     }
 

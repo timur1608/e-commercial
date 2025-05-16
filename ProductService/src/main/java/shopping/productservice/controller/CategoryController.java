@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import shopping.productservice.model.Category;
 import shopping.productservice.service.CategoryService;
 
-import java.util.List;
-import java.util.concurrent.CancellationException;
 
 @Slf4j
 @RestController
@@ -38,12 +36,14 @@ public class CategoryController {
         }
         return ResponseEntity.notFound().build();
     }
+
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody Category category){
         categoryService.save(category);
         log.info("Category created: {}", category);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long id){

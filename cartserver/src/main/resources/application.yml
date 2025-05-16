@@ -5,3 +5,10 @@ spring:
     import: optional:configserver:http://localhost:8071
   application:
     name: cartserver
+  sleuth:
+    feign:
+      enabled: true
+    integration:
+      enabled: true
+    sampler:
+      percentage: 1
