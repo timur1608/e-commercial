@@ -1,6 +1,8 @@
 spring:
   application:
     name: notificationserver
+  profiles:
+    active: dev
   config:
     import: optional:configserver:http://localhost:8071
   zipkin:
@@ -16,10 +18,11 @@ spring:
       bindings:
         receiveSomeMessage-in-0:
           destination: orderStatus
+        getCartForReceipt-in-0:
+          destination: finishedUserCart
   sleuth:
     integration:
       enabled: true
-
 management:
   tracing:
     sampling:

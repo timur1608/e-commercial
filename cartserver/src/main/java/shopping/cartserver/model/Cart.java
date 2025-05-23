@@ -15,5 +15,6 @@ import java.util.Map;
 public class Cart {
     @Id
     private String userId;
+    private String userEmail;
     private Map<Long, Integer> products;
 }

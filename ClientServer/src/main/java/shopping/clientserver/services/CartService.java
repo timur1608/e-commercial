@@ -35,7 +35,6 @@ public class CartService {
             products.put(product, map.get(product.getId()));
             totalPrice += product.getPrice() * map.get(product.getId());
         }
-
         return new Cart(products, totalPrice);
     }
 }

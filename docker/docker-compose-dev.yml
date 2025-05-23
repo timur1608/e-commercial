@@ -1,0 +1,248 @@
+version: "3.8"
+
+#################################
+#  Infrastructure + Dev-runtime #
+#################################
+services:
+  ################################################
+  #  ————  СТОРОННИЕ СЕРВИСЫ (prod | dev)  ———— #
+  ################################################
+  elasticsearch:
+    image: elasticsearch:7.7.0
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - cluster.name=docker-cluster
+      - network.host=0.0.0.0
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    healthcheck:
+      test: curl -fs http://localhost:9200 || exit 1
+    networks: [internal_net]
+    profiles: [prod, dev]
+
+  kibana:
+    image: kibana:7.7.0
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on: [elasticsearch]
+    networks: [internal_net]
+    profiles: [dev]
+
+  logstash:
+    image: logstash:7.7.0
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    depends_on: [elasticsearch]
+    networks: [internal_net]
+    profiles: [prod]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1.3
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    volumes:
+      - keycloak:/opt/keycloak/data
+    command: ["start-dev"]
+    ports:
+      - "8090:8080"
+    networks: [internal_net]
+    profiles: [dev, prod]
+
+  zipkin:
+    image: openzipkin/zipkin:3.4.1
+    depends_on: [elasticsearch]
+    environment:
+      STORAGE_TYPE: elasticsearch
+      ES_HOSTS: http://elasticsearch:9200
+    ports:
+      - "9411:9411"
+    networks: [internal_net]
+    profiles: [prod]
+
+  zipkin-dev:
+    image: openzipkin/zipkin:3.4.1
+    ports:
+      - "9411:9411"
+    networks: [internal_net]
+    profiles: [dev]
+
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - "9092:9092"
+    networks: [internal_net]
+    profiles: [dev, prod]
+
+  ##################################
+  #  ————  DEV Spring-микросервисы  ———— #
+  ##################################
+  productservice-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: productservice-dev
+    working_dir: /workspace/ProductService
+    volumes:
+      - ./ProductService:/workspace/ProductService
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl ProductService
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8081:8081"
+    networks: [internal_net]
+    profiles: [dev]
+
+  cartserver-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: cartserver-dev
+    working_dir: /workspace/cartserver
+    volumes:
+      - ./cartserver:/workspace/cartserver
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl cartserver
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8083:8083"
+    networks: [internal_net]
+    profiles: [dev]
+
+  orderserver-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: orderserver-dev
+    working_dir: /workspace/orderserver
+    volumes:
+      - ./orderserver:/workspace/orderserver
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl orderserver
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8082:8082"
+    networks: [internal_net]
+    profiles: [dev]
+
+  deliveryserver-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: deliveryserver-dev
+    working_dir: /workspace/deliveryserver
+    volumes:
+      - ./deliveryserver:/workspace/deliveryserver
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl deliveryserver
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8085:8085"
+    networks: [internal_net]
+    profiles: [dev]
+
+  notificationserver-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: notificationserver-dev
+    working_dir: /workspace/notificationserver
+    volumes:
+      - ./notificationserver:/workspace/notificationserver
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl notificationserver
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8074:8074"
+    networks: [internal_net]
+    profiles: [dev]
+
+  paymentserver-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: paymentserver-dev
+    working_dir: /workspace/paymentserver
+    volumes:
+      - ./paymentserver:/workspace/paymentserver
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl paymentserver
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8086:8086"
+    networks: [internal_net]
+    profiles: [dev]
+
+  eurekaserver-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: eurekaserver-dev
+    working_dir: /workspace/eurekaserver
+    volumes:
+      - ./eurekaserver:/workspace/eurekaserver
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl eurekaserver
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8070:8070"
+    networks: [internal_net, edge_net]
+    profiles: [dev]
+
+  gateway-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: gateway-dev
+    working_dir: /workspace/GatewayServer
+    volumes:
+      - ./GatewayServer:/workspace/GatewayServer
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl GatewayServer
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8075:8075"
+    depends_on:
+      - eurekaserver-dev
+    networks: [internal_net, edge_net]
+    profiles: [dev]
+
+  client-dev:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: client-dev
+    working_dir: /workspace/ClientServer
+    volumes:
+      - ./ClientServer:/workspace/ClientServer
+      - ~/.m2:/root/.m2:ro
+    command: mvn spring-boot:run -pl ClientServer
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - gateway-dev
+    networks: [edge_net]
+    profiles: [dev]
+
+############################
+volumes:
+  keycloak:
+    driver: local
+  elasticsearch:
+    driver: local
+
+############################
+networks:
+  internal_net:
+    driver: bridge
+  edge_net:
+    driver: bridge

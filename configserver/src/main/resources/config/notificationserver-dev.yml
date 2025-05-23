@@ -1,0 +1,32 @@
+server:
+  port: 8084
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/ecommerce
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: '{cipher}7ca33f784555fc5636f5784df7d312b5bef07e6a881df533d913c15bb0b74b6da5cd659538d62dc9af10fe18246528f1'
+    password: '{cipher}ce6ef64dfe3a5b97fc4ac091228bb931356586b4e60c0d210574b73725fdb6812223481b8570ce2c1450f906dfa3fe80'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+
+

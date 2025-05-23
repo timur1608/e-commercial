@@ -19,9 +19,10 @@ public class CartService {
     }
     public void addProduct(Long productId) {
         String userId = securityExtracter.extractUserId();
+        String email = securityExtracter.extractEmail();
         Cart cart = cartRepository.findByUserId(userId);
         if (cart == null) {
-            cart = new Cart(userId, new HashMap<>());
+            cart = new Cart(userId, email, new HashMap<>());
         }
         if (cart.getProducts() == null) {
             cart.setProducts(new HashMap<>());
@@ -45,11 +46,7 @@ public class CartService {
         }
     }
     public Cart getCart(){
-        Cart cart = cartRepository.findByUserId(securityExtracter.extractUserId());
-        if (cart != null) {
-            return cart;
-        }
-        return null;
+        return cartRepository.findByUserId(securityExtracter.extractUserId());
     }
 
     public void clearCart(){

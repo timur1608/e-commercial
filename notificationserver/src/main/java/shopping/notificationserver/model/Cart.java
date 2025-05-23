@@ -1,4 +1,4 @@
-package shopping.deliveryserver.model;
+package shopping.notificationserver.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
